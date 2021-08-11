@@ -17,14 +17,14 @@ public class Player : MonoBehaviour
 
     //Local Variables
     public float XPos;
-    private bool IsPlaying;
+    private bool FingerOn;
 
 
 
 
     private void OnEnable()
     {
-        IsPlaying = true;
+        PlayerAnimator.SetInteger("Wings", 1);
         _cMachineVertualCamera.gameObject.SetActive(true);
         transform.parent = null;
         Rb.useGravity = true;
@@ -33,6 +33,10 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        if (transform.position.z % 10 == 0)
+        {
+            ObstaclesCreator.instance.MoveObsatclesNext();
+        }
         if (Input.touchCount == 1)
         {
             GetInputs();
@@ -41,14 +45,26 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (IsPlaying)
+        if (FingerOn)
         {
-            Move();
+            MoveAndOpenWings();
+        }
+        else
+        {
+            StopMovingAndCloseWings();
         }
     }
 
-    private void Move()
+    private void StopMovingAndCloseWings()
     {
+        transform.Rotate(0, transform.rotation.y * 2,0);
+        PlayerAnimator.SetInteger("Wings", 1);
+    }
+
+    private void MoveAndOpenWings()
+    {
+        PlayerAnimator.SetInteger("Wings", 2);
+        transform.Rotate(0, 90, 0);
         Rb.AddForce( Vector3.right * XPos*_moveSpeed * Time.deltaTime);
     }
 
@@ -59,6 +75,7 @@ public class Player : MonoBehaviour
         switch (touch.phase)
         {
             case TouchPhase.Began:
+                FingerOn = true;
                 XPos = touch.deltaPosition.normalized.x;
                 break;
 
@@ -71,8 +88,11 @@ public class Player : MonoBehaviour
                 break;
 
             case TouchPhase.Ended:
+                FingerOn = false;
                 XPos = 0;
                 break;
         }
     }
+
+
 }

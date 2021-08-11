@@ -38,6 +38,7 @@ public class StickController : MonoBehaviour
 
     private void GetInputs()
     {
+
         Touch touch=Input.GetTouch(0);
 
         switch (touch.phase)
