@@ -16,6 +16,7 @@ public class StickController : MonoBehaviour
     [SerializeField] private float _difference;
     [SerializeField] private float _resetStickDistance;
 
+    public static float FingerPos;
 
 
     //temporary Values
@@ -63,6 +64,8 @@ public class StickController : MonoBehaviour
                 {
                     StickAnimController.SetTrigger("Throw");
                     StickAnimController.speed = TouchPos*1.5f;
+                    FingerPos = TouchPos;
+                    this.enabled = false;
                 }
                 else
                 {
@@ -81,5 +84,8 @@ public class StickController : MonoBehaviour
             t -= Time.deltaTime;
             yield return null;
         }
+        
     }
+
+    
 }
