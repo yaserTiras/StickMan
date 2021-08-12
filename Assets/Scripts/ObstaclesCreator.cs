@@ -12,6 +12,7 @@ public class ObstaclesCreator : MonoBehaviour
 
     [SerializeField] private int ObstaclesXsize;
     [SerializeField] private int ObstaclesZsize;
+    [SerializeField] private int MaxPlayerPrefabDistance;
 
     [SerializeField] private GameObject[,] ObjectsPool=new GameObject[41,20];
 
@@ -36,8 +37,8 @@ public class ObstaclesCreator : MonoBehaviour
         {
             for(int j = 0; j < ObstaclesZsize; j++)
             {
-                GameObject Obj = Instantiate(ObsataclePrefabs[GetRandomNumber(0, 2)], new Vector3((j*10)+ GetRandomNumber(-2, 4), 0,(i*10)+ GetRandomNumber(-2, 4)) , Quaternion.identity);
-                Obj.transform.localScale = new Vector3(3, GetRandomNumber(1, 3), 3);
+                GameObject Obj = Instantiate(ObsataclePrefabs[GetRandomNumber(0, 2)], new Vector3((j*20)+ GetRandomNumber(-2, 4), 0,(i*20)+ GetRandomNumber(-2, 4)) , Quaternion.identity);
+                Obj.transform.localScale = new Vector3(Obj.transform.localScale.x, GetRandomNumber(1, 3), Obj.transform.localScale.z);
                 Obj.transform.parent = this.transform;
                 ObjectsPool[i,j] = Obj;
             }
@@ -52,8 +53,12 @@ public class ObstaclesCreator : MonoBehaviour
         {
             for(int j = 0; j < 20; j++)
             {
-                ObjectsPool[i, j].transform.position = ObjectsPool[i, j].transform.position+Vector3.forward*400;
+                ObjectsPool[i, j].transform.position = ObjectsPool[i, j].transform.position+Vector3.forward*803;
             }
+        }
+        if(k>= ObstaclesXsize-1)
+        {
+            k = 0;
         }
         k++;
     }
@@ -62,5 +67,16 @@ public class ObstaclesCreator : MonoBehaviour
     private int GetRandomNumber(int min,int max)
     {
         return Random.Range(min,max);
+    }
+
+
+    public void DistanceCalculator(float PlayerZPos)
+    {
+        float Dis =PlayerZPos- ObjectsPool[k, 0].transform.position.z ;
+        if (Dis > MaxPlayerPrefabDistance)
+        {
+            MoveObsatclesNext();
+        }
+
     }
 }
